@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --canvas: #f4f7fb;
+  --surface: #ffffff;
+  --ink: #0f172a;
+  --muted: #5b6b80;
+  --line: #dce4ee;
+  --accent: #e11d48;
+  --accent-soft: #ffe4e8;
+  --gold: #f59e0b;
+  --gold-soft: #fef3c7;
+  --navy: #1d4ed8;
+  --ok: #0f766e;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-navy: var(--navy);
+  --color-ok: var(--ok);
+  --font-sans: var(--font-body), "Source Sans 3", sans-serif;
+  --font-display: var(--font-heading), "Plus Jakarta Sans", sans-serif;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+.scratch-canvas {
+  touch-action: none;
+  cursor: grab;
+}
+
+@keyframes bannerIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
