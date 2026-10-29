@@ -40,6 +40,7 @@ export const FALLBACK_FILTERS: FiltersPayload = {
 export const FALLBACK_COUPONS: Coupon[] = [
   {
     id: 1,
+    business_id: 1,
     title: "Combo doble + bebida incluida",
     code: "BH30A1",
     store: "Burger House",
@@ -61,6 +62,7 @@ export const FALLBACK_COUPONS: Coupon[] = [
   },
   {
     id: 2,
+    business_id: 2,
     title: "Herramientas eléctricas seleccionadas",
     code: "FV20B2",
     store: "Ferretería El Volcán",
@@ -82,6 +84,7 @@ export const FALLBACK_COUPONS: Coupon[] = [
   },
   {
     id: 3,
+    business_id: 3,
     title: "Medicamentos genéricos",
     code: "ST15C3",
     store: "Farmacia Salud Total",

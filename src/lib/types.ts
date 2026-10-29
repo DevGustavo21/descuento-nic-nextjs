@@ -1,5 +1,6 @@
 export type Coupon = {
   id: number;
+  business_id: number;
   title: string;
   code: string;
   store: string;
@@ -18,6 +19,8 @@ export type Coupon = {
   badge: "hot" | "new" | "expires" | null;
   remaining: number;
   max_redemptions: number;
+  redeem_url?: string;
+  qr_url?: string;
 };
 
 export type CategoryItem = { name: string; slug: string; icon: string };

@@ -18,7 +18,7 @@ export default async function CategoryPage({
   }
 
   return (
-    <div className="flex min-h-full flex-col">
+    <div className="flex min-h-dvh flex-1 flex-col">
       <p className="bg-navy px-4 py-2 text-center text-xs font-medium text-white">
         Cupones vigentes de negocios verificados en Nicaragua
       </p>

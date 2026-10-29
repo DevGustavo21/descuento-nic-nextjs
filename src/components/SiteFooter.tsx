@@ -29,6 +29,11 @@ export function SiteFooter({ categories }: { categories: CategoryItem[] }) {
           <p className="font-display font-bold text-white">Negocios</p>
           <ul className="mt-3 space-y-2">
             <li>
+              <Link href="/favoritos" className="hover:text-white">
+                Favoritos
+              </Link>
+            </li>
+            <li>
               <a href={`${NEGOCIO_URL}/register`} className="hover:text-white">
                 Registrar negocio
               </a>

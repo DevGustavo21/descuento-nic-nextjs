@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Source_Sans_3 } from "next/font/google";
+import { FavoritesProvider } from "@/lib/favorites";
 import "./globals.css";
 
 const display = Plus_Jakarta_Sans({
@@ -27,7 +28,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${display.variable} ${sans.variable} h-full antialiased`}
       style={{ colorScheme: "light" }}
     >
-      <body className="min-h-full flex flex-col bg-canvas font-sans text-ink">{children}</body>
+      <body className="flex min-h-dvh flex-col bg-canvas font-sans text-ink">
+        <FavoritesProvider>{children}</FavoritesProvider>
+      </body>
     </html>
   );
 }

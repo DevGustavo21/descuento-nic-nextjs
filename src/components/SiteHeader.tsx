@@ -3,8 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { ChevronDown, Menu, Search, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { ChevronDown, Heart, Menu, Search, X } from "lucide-react";
 import { categoryIcon } from "@/lib/icons";
+import { useFavorites } from "@/lib/favorites";
 import { NEGOCIO_URL, type CategoryItem } from "@/lib/types";
 
 type Props = {
@@ -27,6 +29,10 @@ export function SiteHeader({
   const [openCats, setOpenCats] = useState(false);
   const [mounted, setMounted] = useState(false);
   const catsRef = useRef<HTMLDivElement>(null);
+  const { favoriteIds } = useFavorites();
+  const pathname = usePathname();
+  const onFavorites = pathname === "/favoritos";
+  const favoritesCount = favoriteIds.length;
 
   useEffect(() => {
     setMounted(true);
@@ -121,6 +127,23 @@ export function SiteHeader({
         </label>
 
         <nav className="ml-1 hidden items-center gap-2 text-sm lg:flex">
+          <Link
+            href="/favoritos"
+            aria-label="Favoritos"
+            aria-current={onFavorites ? "page" : undefined}
+            className={`relative grid h-10 w-10 place-items-center rounded-xl border ${
+              onFavorites
+                ? "border-accent bg-accent-soft text-accent"
+                : "border-line bg-white text-muted hover:text-accent"
+            }`}
+          >
+            <Heart className={`h-5 w-5 ${onFavorites ? "fill-current" : ""}`} />
+            {favoritesCount > 0 ? (
+              <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-white">
+                {favoritesCount}
+              </span>
+            ) : null}
+          </Link>
           <a
             href={`${NEGOCIO_URL}/login`}
             className="rounded-lg px-3 py-2 font-medium text-muted hover:text-ink"
@@ -134,6 +157,24 @@ export function SiteHeader({
             Registrar negocio
           </a>
         </nav>
+
+        <Link
+          href="/favoritos"
+          aria-label="Favoritos"
+          aria-current={onFavorites ? "page" : undefined}
+          className={`relative grid h-10 w-10 shrink-0 place-items-center rounded-xl border lg:hidden ${
+            onFavorites
+              ? "border-accent bg-accent-soft text-accent"
+              : "border-line bg-white text-ink"
+          }`}
+        >
+          <Heart className={`h-5 w-5 ${onFavorites ? "fill-current" : ""}`} />
+          {favoritesCount > 0 ? (
+            <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-white">
+              {favoritesCount}
+            </span>
+          ) : null}
+        </Link>
 
         <button
           type="button"
@@ -167,6 +208,26 @@ export function SiteHeader({
                   </button>
                 </div>
                 <div className="flex-1 overflow-y-auto px-3 py-4">
+                  <Link
+                    href="/favoritos"
+                    onClick={() => onNavClose()}
+                    className={`mb-5 flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left ${
+                      onFavorites
+                        ? "border-accent bg-accent-soft"
+                        : "border-line bg-canvas"
+                    }`}
+                  >
+                    <span
+                      className={`inline-flex items-center gap-2 text-sm font-semibold ${
+                        onFavorites ? "text-accent" : "text-ink"
+                      }`}
+                    >
+                      <Heart className={`h-4 w-4 ${onFavorites ? "fill-current" : "text-accent"}`} />
+                      Guardados
+                    </span>
+                    <span className="text-xs font-bold text-muted">{favoritesCount}</span>
+                  </Link>
+
                   <p className="px-2 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">
                     Cuenta de negocio
                   </p>

@@ -1,11 +1,8 @@
 "use client";
 
-import { MapPin } from "lucide-react";
 import type { Coupon } from "@/lib/types";
-import { FALLBACK_FILTERS } from "@/lib/fallback";
 import { StoreLogo } from "@/components/StoreLogo";
-
-const CHANNEL_LABELS = FALLBACK_FILTERS.channels;
+import { FavoriteButton } from "@/components/FavoriteButton";
 
 function formatDate(value: string) {
   return new Date(`${value}T00:00:00`).toLocaleDateString("es-NI", {
@@ -14,73 +11,78 @@ function formatDate(value: string) {
   });
 }
 
-const BADGES: Record<NonNullable<Coupon["badge"]>, { label: string; className: string }> = {
-  hot: { label: "Popular", className: "bg-accent text-white" },
-  new: { label: "Nuevo", className: "bg-navy text-white" },
-  expires: { label: "Por vencer", className: "bg-gold text-white" },
-};
-
 export function CouponCard({
   coupon,
   onOpen,
+  dense = false,
 }: {
   coupon: Coupon;
   onOpen: (coupon: Coupon) => void;
+  dense?: boolean;
 }) {
-  const channel = coupon.channels[0];
-  const badge = coupon.badge ? BADGES[coupon.badge] : null;
-
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(225,29,72,0.08)]">
-      <div className="flex items-start gap-3 px-4 pt-4">
-        <StoreLogo src={coupon.logo_url} name={coupon.store} />
-        <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-navy">
+    <article
+      className={`group relative flex flex-col rounded-2xl border border-line bg-white transition hover:border-accent/40 hover:shadow-[0_12px_28px_rgba(15,23,42,0.06)] ${
+        dense ? "p-3 sm:p-4" : "p-4"
+      }`}
+    >
+      <div className={`absolute z-10 ${dense ? "right-2 top-2" : "right-3 top-3"}`}>
+        <FavoriteButton size="sm" couponId={coupon.id} label={coupon.title} />
+      </div>
+
+      <button
+        type="button"
+        onClick={() => onOpen(coupon)}
+        className="flex flex-1 flex-col text-left"
+      >
+        <div className={`flex items-center pr-9 ${dense ? "gap-2" : "gap-3"}`}>
+          <StoreLogo src={coupon.logo_url} name={coupon.store} size={dense ? "sm" : "md"} />
+          <div className="min-w-0">
+            <p className={`truncate font-semibold text-ink ${dense ? "text-xs sm:text-sm" : "text-sm"}`}>
               {coupon.store}
             </p>
-            {badge ? (
-              <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${badge.className}`}>
-                {badge.label}
-              </span>
-            ) : null}
+            <p className={`truncate text-muted ${dense ? "text-[10px] sm:text-xs" : "text-xs"}`}>
+              {coupon.city}
+            </p>
           </div>
-          <p className="mt-1 flex items-center gap-1 text-xs text-muted">
-            <MapPin className="h-3 w-3" />
-            {coupon.city} · {coupon.category}
-          </p>
         </div>
-      </div>
 
-      <div className="px-4 pb-4 pt-3">
-        <h3 className="min-h-[2.6rem] font-display text-[1.02rem] font-bold leading-snug text-ink">
+        <h3
+          className={`line-clamp-2 font-display font-bold leading-snug text-ink ${
+            dense
+              ? "mt-3 min-h-[2.4rem] text-sm sm:min-h-[2.75rem] sm:text-base"
+              : "mt-4 min-h-[2.75rem] text-base"
+          }`}
+        >
           {coupon.title}
         </h3>
-        <div className="mt-3 inline-flex items-baseline gap-1 rounded-xl bg-gold-soft px-3 py-1.5">
-          <span className="font-display text-2xl font-extrabold leading-none text-amber-600">
-            {coupon.discount_label}
-          </span>
-          <span className="text-[10px] font-bold uppercase tracking-wide text-amber-700">
-            {coupon.discount_type === "amount" ? "OFF" : "dto."}
-          </span>
-        </div>
-      </div>
 
-      <div className="mt-auto space-y-3 border-t border-line px-5 py-4">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted">
-          <span className="rounded-full bg-canvas px-2.5 py-1 font-medium">
-            {CHANNEL_LABELS[channel] ?? channel}
-          </span>
-          <span>Vence {formatDate(coupon.expires_at)}</span>
+        <div className={`mt-auto flex items-end justify-between gap-2 ${dense ? "mt-3" : "mt-4"}`}>
+          <p
+            className={`font-display font-extrabold leading-none tracking-tight text-accent ${
+              dense ? "text-xl sm:text-3xl" : "text-3xl"
+            }`}
+          >
+            {coupon.discount_label}
+            <span
+              className={`ml-0.5 font-bold text-accent/70 ${dense ? "text-[10px] sm:text-sm" : "text-sm"}`}
+            >
+              {coupon.discount_type === "amount" ? "OFF" : "dto."}
+            </span>
+          </p>
+          <p className={`pb-0.5 text-muted ${dense ? "text-[10px] sm:text-xs" : "text-xs"}`}>
+            {formatDate(coupon.expires_at)}
+          </p>
         </div>
-        <button
-          type="button"
-          onClick={() => onOpen(coupon)}
-          className="w-full rounded-xl bg-accent py-2.5 font-display text-sm font-bold text-white hover:bg-rose-600"
+
+        <span
+          className={`inline-flex w-full items-center justify-center rounded-xl bg-accent font-display font-bold text-white transition group-hover:bg-rose-600 ${
+            dense ? "mt-3 h-9 text-xs sm:mt-5 sm:h-10 sm:text-sm" : "mt-5 h-10 text-sm"
+          }`}
         >
           Ver cupón
-        </button>
-      </div>
+        </span>
+      </button>
     </article>
   );
 }

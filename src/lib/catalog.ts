@@ -19,6 +19,14 @@ export async function loadCatalog(category?: string) {
     const filters = (await filtersRes.json()) as FiltersPayload;
     const coupons = (couponsJson.data ?? couponsJson) as Coupon[];
 
+    // If the API is up but has no live coupons, keep the UI usable with local demos.
+    if (!Array.isArray(coupons) || coupons.length === 0) {
+      const fallback = category
+        ? FALLBACK_COUPONS.filter((c) => c.category_slug === category)
+        : FALLBACK_COUPONS;
+      return { coupons: fallback, filters };
+    }
+
     return { coupons, filters };
   } catch {
     const coupons = category

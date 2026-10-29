@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const COLORS = [
   "#E11D48",
@@ -34,20 +34,32 @@ export function StoreLogo({
 }: {
   src?: string | null;
   name: string;
-  size?: "md" | "lg";
+  size?: "sm" | "md" | "lg";
 }) {
-  const [failed, setFailed] = useState(!src);
+  const [failed, setFailed] = useState(false);
   const label = useMemo(() => initials(name), [name]);
   const bg = useMemo(() => colorFor(name), [name]);
-  const box = size === "lg" ? "h-14 w-14 text-lg" : "h-14 w-14 text-base";
+  const box =
+    size === "lg"
+      ? "h-14 w-14 rounded-2xl text-lg"
+      : size === "sm"
+        ? "h-9 w-9 rounded-xl text-xs"
+        : "h-14 w-14 rounded-2xl text-base";
 
-  if (!failed && src) {
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
+
+  if (src && !failed) {
     return (
       <img
+        key={src}
         src={src}
         alt={name}
+        loading="lazy"
+        decoding="async"
         onError={() => setFailed(true)}
-        className={`${box} shrink-0 rounded-2xl object-cover ring-1 ring-line`}
+        className={`${box} shrink-0 bg-white object-cover ring-1 ring-line`}
       />
     );
   }
@@ -55,7 +67,7 @@ export function StoreLogo({
   return (
     <span
       aria-hidden
-      className={`${box} inline-flex shrink-0 items-center justify-center rounded-2xl font-display font-extrabold text-white ring-1 ring-line`}
+      className={`${box} inline-flex shrink-0 items-center justify-center font-display font-extrabold text-white ring-1 ring-line`}
       style={{ backgroundColor: bg }}
     >
       {label}

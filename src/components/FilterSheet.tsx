@@ -110,10 +110,10 @@ export function FilterSheet({
             onChange={(v) => onMinDiscount(Number(v))}
             options={[
               { value: "0", label: "Cualquiera" },
-              { value: "10", label: "10% o más" },
-              { value: "20", label: "20% o más" },
-              { value: "30", label: "30% o más" },
-              { value: "50", label: "50% o más" },
+              { value: "10", label: "10%+ o en C$" },
+              { value: "20", label: "20%+ o en C$" },
+              { value: "30", label: "30%+ o en C$" },
+              { value: "50", label: "50%+ o en C$" },
             ]}
           />
           <CompactMultiSelect

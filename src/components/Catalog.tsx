@@ -49,7 +49,6 @@ export function Catalog({
   const [active, setActive] = useState<Coupon | null>(
     () => initialCoupons.find((c) => c.code === initialCode) ?? null,
   );
-
   const coupons = useMemo(() => {
     let items = initialCoupons.filter((c) => {
       if (lockedCategory && c.category_slug !== lockedCategory) return false;
@@ -61,8 +60,12 @@ export function Catalog({
       ) {
         return false;
       }
-      if (minDiscount && (c.discount_type !== "percent" || c.discount_value < minDiscount)) {
-        return false;
+      if (minDiscount) {
+        const matchesPercent =
+          c.discount_type === "percent" && c.discount_value >= minDiscount;
+        // Descuentos en C$ no se pueden comparar con %; se mantienen en el filtro.
+        const matchesAmount = c.discount_type === "amount";
+        if (!matchesPercent && !matchesAmount) return false;
       }
       if (channels.length && !c.channels.some((ch) => channels.includes(ch))) return false;
       if (payments.length && !c.payment_methods.some((p) => payments.includes(p))) return false;
@@ -190,7 +193,7 @@ export function Catalog({
                   onChange={() => setMinDiscount(n)}
                   className="accent-[var(--accent)]"
                 />
-                {n === 0 ? "Cualquiera" : `${n}% o más`}
+                {n === 0 ? "Cualquiera" : `${n}%+ o en C$`}
               </label>
             ))}
           </FilterBlock>
@@ -314,13 +317,24 @@ export function Catalog({
               <p className="mt-1 text-sm text-muted">Probá otra categoría, ciudad o filtro.</p>
             </div>
           ) : (
-            <div className={`grid gap-4 ${listView ? "grid-cols-1" : "sm:grid-cols-2 xl:grid-cols-3"}`}>
+            <div
+              className={`grid ${
+                listView
+                  ? "grid-cols-1 gap-4"
+                  : "grid-cols-2 gap-2.5 sm:gap-4 xl:grid-cols-3"
+              }`}
+            >
               {loadingPage
                 ? Array.from({ length: Math.min(pageSize, 12) }).map((_, i) => (
-                    <CouponSkeleton key={i} />
+                    <CouponSkeleton key={i} dense={!listView} />
                   ))
                 : pagedCoupons.map((coupon) => (
-                    <CouponCard key={coupon.id} coupon={coupon} onOpen={setActive} />
+                    <CouponCard
+                      key={coupon.id}
+                      coupon={coupon}
+                      onOpen={setActive}
+                      dense={!listView}
+                    />
                   ))}
             </div>
           )}
